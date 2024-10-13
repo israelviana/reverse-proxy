@@ -1,0 +1,18 @@
+version: '3.8'
+services:
+  app:
+    build: .
+    depends_on:
+      - db
+    environment:
+      - DATABASE_URL=postgres://postgres:postgres@db:5432/reverse_proxy?sslmode=disable
+    ports:
+      - "3000:3000"
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: reverse_proxy
+    ports:
+      - "5432:5432"

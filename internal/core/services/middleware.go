@@ -15,14 +15,13 @@ type MiddlewareService struct {
 	repo ports.IRepo
 }
 
-func NewMiddlewareService(repo ports.IRepo) *MiddlewareService {
+func NewMiddlewareService(repo ports.IRepo) ports.IMiddlewareService {
 	return &MiddlewareService{
 		repo: repo,
 	}
 }
 
-func (m MiddlewareService) BlockIp(c *fiber.Ctx) error {
-	fmt.Print(c.IP())
+func (m *MiddlewareService) BlockIp(c *fiber.Ctx) error {
 	err := m.repo.StartConnection()
 	if err != nil {
 		fmt.Print(err)
@@ -34,7 +33,6 @@ func (m MiddlewareService) BlockIp(c *fiber.Ctx) error {
 		return c.SendStatus(fiber.StatusForbidden)
 	}
 
-	fmt.Print(c.IP())
 	clientIP := c.IP()
 	for _, blockedIP := range blockedIPs {
 		if clientIP == blockedIP {
@@ -45,7 +43,7 @@ func (m MiddlewareService) BlockIp(c *fiber.Ctx) error {
 	return c.Next()
 }
 
-func (m MiddlewareService) RewriteURIMiddleware(c *fiber.Ctx) error {
+func (m *MiddlewareService) RewriteURIMiddleware(c *fiber.Ctx) error {
 	host := c.Hostname()
 
 	if len(host) >= 4 && host[:4] == "www." {
@@ -56,7 +54,7 @@ func (m MiddlewareService) RewriteURIMiddleware(c *fiber.Ctx) error {
 	return c.Next()
 }
 
-func (m MiddlewareService) BlockRequestMiddleware(c *fiber.Ctx) error {
+func (m *MiddlewareService) BlockRequestMiddleware(c *fiber.Ctx) error {
 	blockRegex := regexp.MustCompile(QueryRegex)
 
 	queryString := string(c.Request().URI().QueryString())

@@ -13,8 +13,7 @@ func InitService(app *fiber.App) {
 		panic(err)
 	}
 
-	postgresSQL := repositories.NewPostgreSQL()
-	middlewareService := services.NewMiddlewareService(postgresSQL)
+	middlewareService := services.NewMiddlewareService(postgres)
 
 	app.Use(middlewareService.BlockIp)
 	app.Use(middlewareService.RewriteURIMiddleware)

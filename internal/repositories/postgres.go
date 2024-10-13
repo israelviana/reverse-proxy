@@ -18,11 +18,11 @@ var (
 
 type PostgreSQL struct{}
 
-func NewPostgreSQL() *PostgreSQL {
+func NewPostgreSQL() ports.IRepo {
 	return &PostgreSQL{}
 }
 
-func (p PostgreSQL) StartConnection() error {
+func (p *PostgreSQL) StartConnection() error {
 	var err error
 
 	dsn := fmt.Sprintf("host=db port=5432 user=postgres password=postgres dbname=reverse_proxy sslmode=disable")
@@ -37,11 +37,10 @@ func (p PostgreSQL) StartConnection() error {
 	return err
 }
 
-func (p PostgreSQL) GetAllBlockedIPs() ([]string, error) {
+func (p *PostgreSQL) GetAllBlockedIPs() ([]string, error) {
 	var ips []string
 	rows, err := postgresDB.Query(`SELECT ip FROM blocked_ips`)
 	if err != nil {
-		fmt.Print("oi1")
 		return nil, err
 	}
 	defer rows.Close()

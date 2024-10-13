@@ -12,11 +12,11 @@ var _ ports.IReverseProxyService = (*ReverseProxyService)(nil)
 
 type ReverseProxyService struct{}
 
-func NewReverseProxyService() *ReverseProxyService {
+func NewReverseProxyService() ports.IReverseProxyService {
 	return &ReverseProxyService{}
 }
 
-func (r ReverseProxyService) RedirectRequest(c *fiber.Ctx) error {
+func (r *ReverseProxyService) RedirectRequest(c *fiber.Ctx) error {
 	backendURL := "http://backend-server.com" + c.OriginalURL()
 
 	reqBody := c.Body()
